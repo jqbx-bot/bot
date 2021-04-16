@@ -6,6 +6,9 @@ from src.message_handlers.command_processors.abstract_command_processor import A
 
 
 class UnwelcomeCommandProcessor(AbstractCommandProcessor):
-    def process(self, bot: AbstractBot, state: BotState, payload: Optional[str]) -> None:
+    def process(self, bot: AbstractBot, state: BotState, user_id: str, payload: Optional[str]) -> None:
+        if user_id not in state.mod_ids:
+            bot.chat('Only mods can do that!')
+            return
         state.set_welcome_message(None)
         bot.chat('The welcome message has been cleared.')

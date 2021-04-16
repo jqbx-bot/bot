@@ -25,7 +25,7 @@ class PushMessageHandler(AbstractMessageHandler):
 
         command_processor = command_processors.get(command, None)
         if command_processor:
-            command_processor.process(bot, state, payload)
+            command_processor.process(bot, state, user_id, payload)
 
 
 

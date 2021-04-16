@@ -6,5 +6,5 @@ from src.message_handlers.command_processors.abstract_command_processor import A
 
 
 class HelpCommandProcessor(AbstractCommandProcessor):
-    def process(self, bot: AbstractBot, state: BotState, payload: Optional[str]) -> None:
+    def process(self, bot: AbstractBot, state: BotState, user_id: str, payload: Optional[str]) -> None:
         bot.chat('For a list of bot commmands, see https://github.com/amamparo/jqbx-bot/blob/master/README.md')

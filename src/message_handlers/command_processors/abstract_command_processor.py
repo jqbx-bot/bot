@@ -7,5 +7,5 @@ from src.bot_state import BotState
 
 class AbstractCommandProcessor(ABC):
     @abstractmethod
-    def process(self, bot: AbstractBot, state: BotState, payload: Optional[str]) -> None:
+    def process(self, bot: AbstractBot, state: BotState, user_id: str, payload: Optional[str]) -> None:
         pass

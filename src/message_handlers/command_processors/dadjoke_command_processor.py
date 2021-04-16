@@ -6,5 +6,5 @@ from src.message_handlers.command_processors.abstract_command_processor import A
 from dadjokes import dadjokes
 
 class DadjokeCommandProcessor(AbstractCommandProcessor):
-    def process(self, bot: AbstractBot, state: BotState, payload: Optional[str]) -> None:
+    def process(self, bot: AbstractBot, state: BotState, user_id: str, payload: Optional[str]) -> None:
         bot.chat(dadjokes.Dadjoke().joke)
