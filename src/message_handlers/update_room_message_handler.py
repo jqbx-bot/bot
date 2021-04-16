@@ -30,4 +30,4 @@ class UpdateRoomMessageHandler(AbstractMessageHandler):
             return
         new_users = [x for x in payload['users'] if x['id'] not in state.user_ids]
         for new_user in new_users:
-            bot.chat('/whisper @%s %s' % (new_user['username'], state.welcome_message))
+            bot.chat('@%s %s' % (new_user['username'], state.welcome_message))
