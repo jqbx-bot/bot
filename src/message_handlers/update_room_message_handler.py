@@ -26,7 +26,7 @@ class UpdateRoomMessageHandler(AbstractMessageHandler):
 
     @staticmethod
     def __welcome_new_users(bot: AbstractBot, state: BotState, payload: dict) -> None:
-        if not state.welcome_message:
+        if not (state.user_ids and state.welcome_message):
             return
         new_users = [x for x in payload['users'] if x['id'] not in state.user_ids]
         for new_user in new_users:
