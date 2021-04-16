@@ -34,8 +34,9 @@ class Bot(AbstractBot):
         self.__ws.send(serialized)
 
     def chat(self, message: str) -> None:
+        print('%s: %s' % (self.__env.get_jqbx_bot_display_name(), message))
         self.send(Message(42, 'chat', {
-            'roomId': '6078f7ee5d84fc019afaa97c',
+            'roomId': self.__env.get_jqbx_room_id(),
             'user': {
                 'username': self.__env.get_jqbx_bot_display_name(),
                 'id': self.__env.get_spotify_user_id(),

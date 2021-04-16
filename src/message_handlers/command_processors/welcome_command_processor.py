@@ -12,9 +12,9 @@ class WelcomeCommandProcessor(AbstractCommandProcessor):
             return
         if not payload:
             if state.welcome_message:
-                bot.chat('The current welcome message is: "Welcome [user(s)]! %s"' % state.welcome_message)
+                bot.chat('The current welcome message is: "%s"' % state.welcome_message)
             else:
                 bot.chat('The welcome message is not currently set. To set one, use the command `/welcome [message]`')
             return
         state.set_welcome_message(payload)
-        bot.chat('Welcome message set to: "Welcome [user(s)]! %s"' % payload)
+        bot.chat('Welcome message set to: "%s"' % payload)

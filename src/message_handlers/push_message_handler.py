@@ -19,6 +19,7 @@ class PushMessageHandler(AbstractMessageHandler):
         if not (stripped.startswith('/') and len(stripped) > 1):
             return
 
+        print('%s: %s' % (payload['user']['username'], stripped))
         parts = stripped.split(' ', 1)
         command = parts[0]
         payload = None if len(parts) == 1 else parts[1]
