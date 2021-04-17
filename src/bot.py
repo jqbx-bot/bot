@@ -35,8 +35,8 @@ class Bot(AbstractBot):
     def run(self):
         self.__web_socket_client.run()
 
-    def chat(self, message: str) -> None:
-        self.__web_socket_client.send(WebSocketMessage(42, 'chat', {
+    def chat(self, message: str, recipients: Optional[List[dict]] = None) -> None:
+        payload = {
             'roomId': self.__env.get_jqbx_room_id(),
             'user': self.__get_bot_user(),
             'message': {
@@ -44,7 +44,10 @@ class Bot(AbstractBot):
                 'user': self.__get_bot_user(),
                 'selectingEmoji': False
             }
-        }))
+        }
+        if recipients:
+            payload['message']['recipients'] = recipients
+        self.__web_socket_client.send(WebSocketMessage(42, 'chat', payload))
 
     def __on_open(self) -> None:
         self.__web_socket_client.send(WebSocketMessage(42, 'join', {
@@ -90,7 +93,10 @@ class Bot(AbstractBot):
     def __welcome_and_update_users(self, payload: dict) -> None:
         if self.__user_ids and self.__welcome_message:
             for new_user in [x for x in payload['users'] if x['id'] not in self.__user_ids]:
-                self.chat('@%s %s' % (new_user['username'], self.__welcome_message))
+                self.chat(
+                    '@%s %s' % (new_user['username'], self.__welcome_message),
+                    [{'uri': 'spotify:user:%s' % new_user['id']}]
+                )
         self.__user_ids = list(set([x['id'] for x in payload['users']]))
 
     def __get_bot_user(self) -> dict:

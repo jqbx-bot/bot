@@ -22,5 +22,5 @@ class AbstractBot(ABC):
         pass
 
     @abstractmethod
-    def chat(self, message: str) -> None:
+    def chat(self, message: str, recipients: Optional[List[dict]] = None) -> None:
         pass
