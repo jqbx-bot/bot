@@ -31,8 +31,8 @@ jobs:
           AWS_DEFAULT_REGION="us-east-1" \
           AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
           AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-          COINBASE_PRO_API_KEY="${{ secrets.COINBASE_PRO_API_KEY }}" \
-          COINBASE_PRO_API_SECRET="${{ secrets.COINBASE_PRO_API_SECRET }}" \
-          COINBASE_PRO_API_PASSPHRASE="${{ secrets.COINBASE_PRO_API_PASSPHRASE }}" \
-          EMAIL="${{ secrets.EMAIL }}" \
+          SPOTIFY_USER_ID="${{ secrets.SPOTIFY_USER_ID }}" \
+          JQBX_ROOM_ID="${{ secrets.JQBX_ROOM_ID }}" \
+          JQBX_BOT_DISPLAY_NAME="${{ secrets.JQBX_BOT_DISPLAY_NAME }}" \
+          JQBX_BOT_IMAGE_URL="${{ secrets.JQBX_BOT_IMAGE_URL }}" \
           cdk deploy --require-approval never --verbose

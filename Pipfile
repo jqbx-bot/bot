@@ -10,6 +10,10 @@ dadjokes = "*"
 udpy = "*"
 
 [dev-packages]
+aws-cdk-core = "*"
+aws-cdk-aws-ecs = "*"
+aws-cdk-aws-logs = "*"
+aws-cdk-aws-iam = "*"
 
 [requires]
 python_version = "3.8"
