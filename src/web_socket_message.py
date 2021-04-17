@@ -2,7 +2,7 @@ from typing import Optional
 
 
 class WebSocketMessage:
-    def __init__(self, code: int, label: Optional[str] = None, payload: Optional[dict] = None):
+    def __init__(self, code: int = 42, label: Optional[str] = None, payload: Optional[dict] = None):
         self.__code = code
         self.__label = label
         self.__payload = payload

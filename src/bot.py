@@ -47,10 +47,10 @@ class Bot(AbstractBot):
         }
         if recipients:
             payload['message']['recipients'] = recipients
-        self.__web_socket_client.send(WebSocketMessage(42, 'chat', payload))
+        self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
     def __on_open(self) -> None:
-        self.__web_socket_client.send(WebSocketMessage(42, 'join', {
+        self.__web_socket_client.send(WebSocketMessage(label='join', payload={
             'roomId': self.__env.get_jqbx_room_id(),
             'user': self.__get_bot_user()
         }))
@@ -66,7 +66,7 @@ class Bot(AbstractBot):
             handler(message)
 
     def __handle_keep_awake_message(self, message: WebSocketMessage) -> None:
-        self.__web_socket_client.send(WebSocketMessage(message.code, 'stayAwake', {'date': message.payload['date']}))
+        self.__web_socket_client.send(WebSocketMessage(label='stayAwake', payload={'date': message.payload['date']}))
         self.__web_socket_client.send(WebSocketMessage(2))
 
     def __handle_push_message(self, message: WebSocketMessage) -> None:

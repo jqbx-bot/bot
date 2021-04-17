@@ -20,7 +20,7 @@ class BotTest(TestCase):
 
     def test_keep_awake(self):
         date = 123
-        keep_awake_message = WebSocketMessage(42, 'keepAwake', {'date': date})
+        keep_awake_message = WebSocketMessage(label='keepAwake', payload={'date': date})
         self.__client.send_server_message(keep_awake_message)
         client_messages = self.__client.dequeue_client_messages()
         stay_awake_message = next(x for x in client_messages if x.label == 'stayAwake')
@@ -32,7 +32,7 @@ class BotTest(TestCase):
     def test_room_update_mod_ids(self):
         self.assertEqual(len(self.__bot.mod_ids), 0)
 
-        room_update_message = WebSocketMessage(42, 'update-room', {
+        room_update_message = WebSocketMessage(label='update-room', payload={
             'admin': [
                 self.__to_spotify_uri('1'),
                 self.__to_spotify_uri('2')
@@ -52,7 +52,7 @@ class BotTest(TestCase):
 
     def test_room_update_welcome(self):
         self.__bot.set_welcome_message('what it do nephew')
-        self.__client.send_server_message(WebSocketMessage(42, 'update-room', {
+        self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
             'admin': [],
             'mods': [],
             'users': [
@@ -60,7 +60,7 @@ class BotTest(TestCase):
                 self.__to_spotify_user('2')
             ]
         }))
-        self.__client.send_server_message(WebSocketMessage(42, 'update-room', {
+        self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
             'admin': [],
             'mods': [],
             'users': [
@@ -78,7 +78,7 @@ class BotTest(TestCase):
 
     def test_room_update_no_welcome_because_no_initial_users(self):
         self.__bot.set_welcome_message('what it do nephew')
-        self.__client.send_server_message(WebSocketMessage(42, 'update-room', {
+        self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
             'admin': [],
             'mods': [],
             'users': [
@@ -90,14 +90,14 @@ class BotTest(TestCase):
         self.assertEqual(len(chat_messages), 0)
 
     def test_room_update_no_welcome_because_no_message(self):
-        self.__client.send_server_message(WebSocketMessage(42, 'update-room', {
+        self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
             'admin': [],
             'mods': [],
             'users': [
                 self.__to_spotify_user('a')
             ]
         }))
-        self.__client.send_server_message(WebSocketMessage(42, 'update-room', {
+        self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
             'admin': [],
             'mods': [],
             'users': [
