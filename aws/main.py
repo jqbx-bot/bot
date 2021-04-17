@@ -49,8 +49,8 @@ class MainStack(Stack):
                 log_group=LogGroup(self, 'LogGroup')
             )
         )
-        cluster = Cluster(self, _id)
-        FargateService(self, _id, cluster=cluster, task_definition=task_definition, desired_count=1)
+        cluster = Cluster(self, '%sCluster' % _id)
+        FargateService(self, '%sService' % _id, cluster=cluster, task_definition=task_definition, desired_count=1)
 
 
 if __name__ == '__main__':
