@@ -56,3 +56,6 @@ class FakeBot(AbstractBot):
         chats = list(self.__chats)
         self.__chats = []
         return chats
+
+    def set_mod_ids(self, mod_ids: List[str]) -> None:
+        self.__mod_ids = mod_ids
