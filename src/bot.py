@@ -1,7 +1,6 @@
-from typing import Dict, Callable, List
+from typing import Dict, Callable, List, Optional
 
 from src.abstract_bot import AbstractBot
-from src.bot_state import BotState
 from src.command_processors.abstract_command_processor import AbstractCommandProcessor
 from src.command_processors.help import HelpCommandProcessor
 from src.env import AbstractEnvironment
@@ -10,15 +9,28 @@ from src.web_socket_message import WebSocketMessage
 
 
 class Bot(AbstractBot):
-    def __init__(self, env: AbstractEnvironment, state: BotState, web_socket_client: AbstractWebSocketClient,
+    def __init__(self, env: AbstractEnvironment, web_socket_client: AbstractWebSocketClient,
                  command_processors: List[AbstractCommandProcessor]):
         self.__env = env
-        self.__state = state
+        self.__mod_ids: List[str] = []
+        self.__user_ids: List[str] = []
+        self.__welcome_message: Optional[str] = None
         self.__command_processors: Dict[str, AbstractCommandProcessor] = {
             x.keyword: x for x in command_processors + [HelpCommandProcessor()]
         }
         self.__web_socket_client = web_socket_client
         web_socket_client.register(self.__on_open, self.__on_message)
+
+    @property
+    def mod_ids(self) -> List[str]:
+        return self.__mod_ids
+
+    @property
+    def welcome_message(self) -> Optional[str]:
+        return self.__welcome_message
+
+    def set_welcome_message(self, welcome_message: Optional[str]) -> None:
+        self.__welcome_message = welcome_message
 
     def run(self):
         self.__web_socket_client.run()
@@ -68,20 +80,18 @@ class Bot(AbstractBot):
 
         command_processor = self.__command_processors.get(keyword)
         if command_processor:
-            command_processor.process(self, self.__state, user_id, payload)
+            command_processor.process(self, user_id, payload)
 
     def __handle_update_room_message(self, message: WebSocketMessage) -> None:
-        self.__update_mod_ids(message.payload)
+        payload = message.payload
+        self.__mod_ids = [x.split(':')[-1] for x in list(set(payload['admin'] + payload['mods']))]
         self.__welcome_and_update_users(message.payload)
 
-    def __update_mod_ids(self, payload: dict) -> None:
-        self.__state.set_mod_ids([x.split(':')[-1] for x in list(set(payload['admin'] + payload['mods']))])
-
     def __welcome_and_update_users(self, payload: dict) -> None:
-        if self.__state.user_ids and self.__state.welcome_message:
-            for new_user in [x for x in payload['users'] if x['id'] not in self.__state.user_ids]:
-                self.chat('@%s %s' % (new_user['username'], self.__state.welcome_message))
-        self.__state.set_user_ids(list(set([x['id'] for x in payload['users']])))
+        if self.__user_ids and self.__welcome_message:
+            for new_user in [x for x in payload['users'] if x['id'] not in self.__user_ids]:
+                self.chat('@%s %s' % (new_user['username'], self.__welcome_message))
+        self.__user_ids = list(set([x['id'] for x in payload['users']]))
 
     def __get_bot_user(self) -> dict:
         return {
