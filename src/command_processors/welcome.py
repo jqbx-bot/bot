@@ -2,10 +2,14 @@ from typing import Optional
 
 from src.abstract_bot import AbstractBot
 from src.bot_state import BotState
-from src.message_handlers.command_processors.abstract_command_processor import AbstractCommandProcessor
+from src.command_processors.abstract_command_processor import AbstractCommandProcessor
 
 
 class WelcomeCommandProcessor(AbstractCommandProcessor):
+    @property
+    def keyword(self) -> str:
+        return 'welcome'
+
     def process(self, bot: AbstractBot, state: BotState, user_id: str, payload: Optional[str]) -> None:
         if user_id not in state.mod_ids:
             bot.chat('Only mods can do that!')
