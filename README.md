@@ -9,7 +9,9 @@
 | /dadjoke | Tells a random dad joke. | |
 | /help | See list of available commands | |
 
-## TODO:
-* Implement commands: `/relink`, `/ro`, `/urban`, `/inspiration`
-* deploy to cheap AWS ECS cluster
+## Commands to implement
+* `/ro`
+* `/relink`
+
+## TODO
 * display `/help` in the chat dynamically, instead of by linking to this README
