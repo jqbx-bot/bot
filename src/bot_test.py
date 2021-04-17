@@ -22,8 +22,12 @@ class BotTest(TestCase):
         date = 123
         keep_awake_message = WebSocketMessage(42, 'keepAwake', {'date': date})
         self.__client.send_server_message(keep_awake_message)
-        stay_awake_message = next(x for x in self.__client.dequeue_client_messages() if x.label == 'stayAwake')
+        client_messages = self.__client.dequeue_client_messages()
+        stay_awake_message = next(x for x in client_messages if x.label == 'stayAwake')
         self.assertEqual(stay_awake_message.payload['date'], date)
+        code_2_message = next(x for x in client_messages if x.code == 2)
+        self.assertIsNone(code_2_message.label)
+        self.assertIsNone(code_2_message.payload)
 
     def test_room_update_mod_ids(self):
         self.assertEqual(len(self.__bot.mod_ids), 0)

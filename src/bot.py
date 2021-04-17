@@ -67,6 +67,7 @@ class Bot(AbstractBot):
 
     def __handle_keep_awake_message(self, message: WebSocketMessage) -> None:
         self.__web_socket_client.send(WebSocketMessage(message.code, 'stayAwake', {'date': message.payload['date']}))
+        self.__web_socket_client.send(WebSocketMessage(2))
 
     def __handle_push_message(self, message: WebSocketMessage) -> None:
         payload = message.payload

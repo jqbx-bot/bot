@@ -33,10 +33,10 @@ class WebSocketClient(AbstractWebSocketClient):
         self.__ws.run_forever()
 
     def send(self, web_socket_message: WebSocketMessage) -> None:
-        serialized = '%s["%s"' % (web_socket_message.code, web_socket_message.label)
-        if web_socket_message.payload is not None:
-            serialized += ',%s' % json.dumps(web_socket_message.payload)
-        serialized += ']'
+        serialized = str(web_socket_message.code)
+        array_part = [x for x in [web_socket_message.label, web_socket_message.payload] if x]
+        if array_part:
+            serialized += json.dumps(array_part)
         self.__ws.send(serialized)
 
     @staticmethod
