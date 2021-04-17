@@ -1,13 +1,13 @@
-from typing import Optional, List
+from typing import Optional
 
 from src.abstract_bot import AbstractBot
 from src.command_processors.abstract_command_processor import AbstractCommandProcessor
+from src.command_processors.vote_processor import VoteProcessor
 
 
 class NockOutCommandProcessor(AbstractCommandProcessor):
     def __init__(self):
-        self.__current_track: Optional[dict] = None
-        self.__noper_ids: List[str] = []
+        self.__vote_processor = VoteProcessor('no', 'no, no, no :-1: no way José!')
 
     @property
     def keyword(self) -> str:
@@ -20,24 +20,4 @@ class NockOutCommandProcessor(AbstractCommandProcessor):
         '''
 
     def process(self, bot: AbstractBot, user_id: str, payload: Optional[str] = None) -> None:
-        if not bot.current_track:
-            return
-        if bot.doped:
-            bot.chat('I\'m already bopping to this')
-            return
-        if bot.noped:
-            bot.chat('I\'m already hating this')
-            return
-        if self.__current_track is None or self.__current_track['id'] != bot.current_track['id']:
-            self.__current_track = bot.current_track
-            self.__noper_ids = []
-        if user_id in self.__noper_ids:
-            bot.chat('You\'ve already voted')
-            return
-        self.__noper_ids.append(user_id)
-        noper_count = len(self.__noper_ids)
-        if noper_count <= 2:
-            bot.chat(', '.join('no' for _ in range(noper_count)))
-        elif noper_count == 3:
-            bot.chat('no, no, no :-1: no way José!')
-            bot.nope()
+        self.__vote_processor.process(bot, user_id, bot.nope)
