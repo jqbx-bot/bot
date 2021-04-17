@@ -10,5 +10,9 @@ class DadjokeCommandProcessor(AbstractCommandProcessor):
     def keyword(self) -> str:
         return 'dadjoke'
 
+    @property
+    def help(self) -> str:
+        return 'Tell a random dad joke'
+
     def process(self, bot: AbstractBot, user_id: str, payload: Optional[str]) -> None:
         bot.chat(dadjokes.Dadjoke().joke)

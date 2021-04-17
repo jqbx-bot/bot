@@ -9,6 +9,13 @@ class WelcomeCommandProcessor(AbstractCommandProcessor):
     def keyword(self) -> str:
         return 'welcome'
 
+    @property
+    def help(self) -> str:
+        return '''
+            Set a welcome message or see the current welcome message if none provided.
+            E.g. `/welcome Hi!` to set the welcome message, `/welcome` to just see the current welcome message.
+        '''
+
     def process(self, bot: AbstractBot, user_id: str, payload: Optional[str]) -> None:
         if user_id not in bot.mod_ids:
             bot.chat('Only mods can do that!')
