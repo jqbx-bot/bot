@@ -18,6 +18,16 @@ class AbstractBot(ABC):
     def current_track(self) -> Optional[dict]:
         pass
 
+    @property
+    @abstractmethod
+    def doped(self) -> bool:
+        pass
+
+    @property
+    @abstractmethod
+    def noped(self) -> bool:
+        pass
+
     @abstractmethod
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         pass
@@ -32,4 +42,8 @@ class AbstractBot(ABC):
 
     @abstractmethod
     def dope(self) -> None:
+        pass
+
+    @abstractmethod
+    def nope(self) -> None:
         pass

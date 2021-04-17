@@ -9,6 +9,7 @@ class FakeBot(AbstractBot):
         self.__welcome_message: Optional[str] = None
         self.__chats: List[str] = []
         self.__doped: bool = False
+        self.__noped: bool = False
         self.__current_track: Optional[dict] = None
 
     @property
@@ -27,6 +28,10 @@ class FakeBot(AbstractBot):
     def doped(self) -> bool:
         return self.__doped
 
+    @property
+    def noped(self) -> bool:
+        return self.__noped
+
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         self.__welcome_message = welcome_message
 
@@ -39,8 +44,13 @@ class FakeBot(AbstractBot):
     def dope(self) -> None:
         self.__doped = True
 
+    def nope(self) -> None:
+        self.__noped = True
+
     def set_current_track(self, current_track: dict) -> None:
         self.__current_track = current_track
+        self.__doped = False
+        self.__noped = False
 
     def dequeue_chats(self) -> List[str]:
         chats = list(self.__chats)

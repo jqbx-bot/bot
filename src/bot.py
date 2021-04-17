@@ -16,6 +16,8 @@ class Bot(AbstractBot):
         self.__user_ids: List[str] = []
         self.__welcome_message: Optional[str] = None
         self.__current_track: Optional[dict] = None
+        self.__doped: bool = False
+        self.__noped: bool = False
         self.__command_processors: Dict[str, AbstractCommandProcessor] = {
             x.keyword: x for x in command_processors + [HelpCommandProcessor()]
         }
@@ -33,6 +35,14 @@ class Bot(AbstractBot):
     @property
     def current_track(self) -> Optional[dict]:
         return self.__current_track
+
+    @property
+    def doped(self) -> bool:
+        return self.__doped
+
+    @property
+    def noped(self) -> bool:
+        return self.__noped
 
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         self.__welcome_message = welcome_message
@@ -55,10 +65,22 @@ class Bot(AbstractBot):
         self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
     def dope(self) -> None:
+        if self.__doped or self.__noped:
+            return
         self.__web_socket_client.send(WebSocketMessage(label='thumbsUp', payload={
             'roomId': self.__env.get_jqbx_room_id(),
             'user': self.__get_bot_user()
         }))
+        self.__doped = True
+
+    def nope(self) -> None:
+        if self.__doped or self.__noped:
+            return
+        self.__web_socket_client.send(WebSocketMessage(label='thumbsDown', payload={
+            'roomId': self.__env.get_jqbx_room_id(),
+            'user': self.__get_bot_user()
+        }))
+        self.__noped = True
 
     def __on_open(self) -> None:
         self.__web_socket_client.send(WebSocketMessage(label='join', payload={
@@ -104,7 +126,7 @@ class Bot(AbstractBot):
         self.__welcome_and_update_users(message.payload)
         tracks = payload.get('tracks', [])
         if tracks:
-            self.__current_track = tracks[0]
+            self.__handle_track_change(tracks[0])
 
     def __welcome_and_update_users(self, payload: dict) -> None:
         users: List[dict] = payload.get('users', [])
@@ -117,7 +139,12 @@ class Bot(AbstractBot):
         self.__user_ids = list(set([x['id'] for x in users]))
 
     def __handle_play_track(self, message: WebSocketMessage) -> None:
-        self.__current_track = message.payload
+        self.__handle_track_change(message.payload)
+
+    def __handle_track_change(self, new_track: dict) -> None:
+        self.__current_track = new_track
+        self.__doped = False
+        self.__noped = False
 
     def __get_bot_user(self) -> dict:
         return {
