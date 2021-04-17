@@ -12,7 +12,7 @@ class DadjokeCommandProcessor(AbstractCommandProcessor):
 
     @property
     def help(self) -> str:
-        return 'Tell a random dad joke'
+        return 'Get a dad joke! Will give a random joke if you do not use a search term.'
 
     def process(self, bot: AbstractBot, user_id: str, payload: Optional[str]) -> None:
         bot.chat(dadjokes.Dadjoke().joke)

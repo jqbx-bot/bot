@@ -5,10 +5,14 @@ from src.command_processors.abstract_command_processor import AbstractCommandPro
 
 
 class FakeCommandProcessor(AbstractCommandProcessor):
+
     def __init__(self):
         self.__call_user_id: Optional[str] = None
         self.__call_payload: Optional[str] = None
         self.__was_called: bool = False
+    @property
+    def help(self) -> str:
+        return ''
 
     @property
     def keyword(self) -> str:

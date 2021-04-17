@@ -13,6 +13,11 @@ class AbstractBot(ABC):
     def welcome_message(self) -> Optional[str]:
         pass
 
+    @property
+    @abstractmethod
+    def current_track(self) -> Optional[dict]:
+        pass
+
     @abstractmethod
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         pass
@@ -23,4 +28,8 @@ class AbstractBot(ABC):
 
     @abstractmethod
     def chat(self, message: str, recipients: Optional[List[dict]] = None) -> None:
+        pass
+
+    @abstractmethod
+    def dope(self) -> None:
         pass

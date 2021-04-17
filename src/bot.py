@@ -15,6 +15,7 @@ class Bot(AbstractBot):
         self.__mod_ids: List[str] = []
         self.__user_ids: List[str] = []
         self.__welcome_message: Optional[str] = None
+        self.__current_track: Optional[dict] = None
         self.__command_processors: Dict[str, AbstractCommandProcessor] = {
             x.keyword: x for x in command_processors + [HelpCommandProcessor()]
         }
@@ -28,6 +29,10 @@ class Bot(AbstractBot):
     @property
     def welcome_message(self) -> Optional[str]:
         return self.__welcome_message
+
+    @property
+    def current_track(self) -> Optional[dict]:
+        return self.__current_track
 
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         self.__welcome_message = welcome_message
@@ -49,6 +54,12 @@ class Bot(AbstractBot):
             payload['message']['recipients'] = recipients
         self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
+    def dope(self) -> None:
+        self.__web_socket_client.send(WebSocketMessage(label='thumbsUp', payload={
+            'roomId': self.__env.get_jqbx_room_id(),
+            'user': self.__get_bot_user()
+        }))
+
     def __on_open(self) -> None:
         self.__web_socket_client.send(WebSocketMessage(label='join', payload={
             'roomId': self.__env.get_jqbx_room_id(),
@@ -59,7 +70,8 @@ class Bot(AbstractBot):
         handlers: Dict[str, Callable[[WebSocketMessage], None]] = {
             'keepAwake': self.__handle_keep_awake_message,
             'update-room': self.__handle_update_room_message,
-            'push-message': self.__handle_push_message
+            'push-message': self.__handle_push_message,
+            'play-track': self.__handle_play_track
         }
         handler = handlers.get(message.label, None)
         if handler:
@@ -88,17 +100,24 @@ class Bot(AbstractBot):
 
     def __handle_update_room_message(self, message: WebSocketMessage) -> None:
         payload = message.payload
-        self.__mod_ids = [x.split(':')[-1] for x in list(set(payload['admin'] + payload['mods']))]
+        self.__mod_ids = [x.split(':')[-1] for x in list(set(payload.get('admin', []) + payload.get('mods', [])))]
         self.__welcome_and_update_users(message.payload)
+        tracks = payload.get('tracks', [])
+        if tracks:
+            self.__current_track = tracks[0]
 
     def __welcome_and_update_users(self, payload: dict) -> None:
+        users: List[dict] = payload.get('users', [])
         if self.__user_ids and self.__welcome_message:
-            for new_user in [x for x in payload['users'] if x['id'] not in self.__user_ids]:
+            for new_user in [x for x in users if x['id'] not in self.__user_ids]:
                 self.chat(
                     '@%s %s' % (new_user['username'], self.__welcome_message),
                     [{'uri': 'spotify:user:%s' % new_user['id']}]
                 )
-        self.__user_ids = list(set([x['id'] for x in payload['users']]))
+        self.__user_ids = list(set([x['id'] for x in users]))
+
+    def __handle_play_track(self, message: WebSocketMessage) -> None:
+        self.__current_track = message.payload
 
     def __get_bot_user(self) -> dict:
         return {

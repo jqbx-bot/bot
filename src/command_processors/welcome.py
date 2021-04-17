@@ -12,8 +12,7 @@ class WelcomeCommandProcessor(AbstractCommandProcessor):
     @property
     def help(self) -> str:
         return '''
-            Set a welcome message or see the current welcome message if none provided.
-            E.g. `/welcome Hi!` to set the welcome message, `/welcome` to just see the current welcome message.
+            Set a welcome message (or just display the current message if new message not provided)
         '''
 
     def process(self, bot: AbstractBot, user_id: str, payload: Optional[str]) -> None:

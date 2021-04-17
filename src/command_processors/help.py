@@ -40,4 +40,4 @@ class HelpCommandProcessor(AbstractCommandProcessor):
 
     @staticmethod
     def __command_help(bot: AbstractBot, command: AbstractCommandProcessor) -> None:
-        bot.chat('/%s - %s' % (command.keyword, command.help))
+        bot.chat('/%s: %s' % (command.keyword, command.help))

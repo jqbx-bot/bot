@@ -4,6 +4,7 @@ from src.bot import Bot
 from src.test_utils.fake_command_processor import FakeCommandProcessor
 from src.test_utils.fake_environment import FakeEnvironment
 from src.test_utils.fake_web_socket_client import FakeWebSocketClient
+from src.test_utils.test_helpers import create_random_id_object
 from src.web_socket_message import WebSocketMessage
 
 
@@ -42,8 +43,7 @@ class BotTest(TestCase):
             'mods': [
                 self.__to_spotify_uri('2'),
                 self.__to_spotify_uri('3')
-            ],
-            'users': []
+            ]
         })
         self.__client.send_server_message(room_update_message)
 
@@ -55,16 +55,12 @@ class BotTest(TestCase):
     def test_room_update_welcome(self):
         self.__bot.set_welcome_message('what it do nephew')
         self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
-            'admin': [],
-            'mods': [],
             'users': [
                 self.__to_spotify_user('1'),
                 self.__to_spotify_user('2')
             ]
         }))
         self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
-            'admin': [],
-            'mods': [],
             'users': [
                 self.__to_spotify_user('1'),
                 self.__to_spotify_user('2'),
@@ -81,8 +77,6 @@ class BotTest(TestCase):
     def test_room_update_no_welcome_because_no_initial_users(self):
         self.__bot.set_welcome_message('what it do nephew')
         self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
-            'admin': [],
-            'mods': [],
             'users': [
                 self.__to_spotify_user('1'),
                 self.__to_spotify_user('2')
@@ -93,15 +87,11 @@ class BotTest(TestCase):
 
     def test_room_update_no_welcome_because_no_message(self):
         self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
-            'admin': [],
-            'mods': [],
             'users': [
                 self.__to_spotify_user('a')
             ]
         }))
         self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
-            'admin': [],
-            'mods': [],
             'users': [
                 self.__to_spotify_user('a'),
                 self.__to_spotify_user('b')
@@ -109,6 +99,17 @@ class BotTest(TestCase):
         }))
         chat_messages = [x for x in self.__client.dequeue_client_messages() if x.label == 'chat']
         self.assertEqual(len(chat_messages), 0)
+
+    def test_room_update_tracks(self):
+        self.assertIsNone(self.__bot.current_track)
+        last_track = create_random_id_object()
+        self.__client.send_server_message(WebSocketMessage(label='update-room', payload={
+            'tracks': [
+                last_track,
+                create_random_id_object()
+            ]
+        }))
+        self.assertEqual(self.__bot.current_track, last_track)
 
     def test_push_message_command(self) -> None:
         self.__client.send_server_message(WebSocketMessage(
@@ -141,6 +142,14 @@ class BotTest(TestCase):
             payload=self.__create_push_message('joe', 'fake foo bar')
         ))
         self.assertFalse(self.__command_processor.was_called)
+
+    def test_play_track(self) -> None:
+        self.assertIsNone(self.__bot.current_track)
+        foo_track = {'id': 'foo'}
+        self.__client.send_server_message(WebSocketMessage(label='play-track', payload=foo_track))
+        self.assertEqual(self.__bot.current_track, foo_track)
+        bar_track = {'id': 'foo'}
+        self.__client.send_server_message(WebSocketMessage(label='play-track', payload=bar_track))
 
     @staticmethod
     def __create_push_message(user_id: str, message: str) -> dict:
