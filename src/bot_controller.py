@@ -9,7 +9,11 @@ from src.web_socket_message import WebSocketMessage
 
 class AbstractBotController(ABC):
     @abstractmethod
-    def chat(self, message: str, recipients: Optional[List[dict]] = None) -> None:
+    def chat(self, message: str) -> None:
+        pass
+
+    @abstractmethod
+    def whisper(self, message: str, recipient: dict) -> None:
         pass
 
     @abstractmethod
@@ -65,7 +69,7 @@ class BotController(AbstractBotController):
             BotController()
         return BotController.__instance
 
-    def chat(self, message: str, recipients: Optional[List[dict]] = None) -> None:
+    def chat(self, message: str) -> None:
         payload = {
             'roomId': self.__env.get_jqbx_room_id(),
             'user': get_bot_user(self.__env),
@@ -75,8 +79,19 @@ class BotController(AbstractBotController):
                 'selectingEmoji': False
             }
         }
-        if recipients:
-            payload['message']['recipients'] = recipients
+        self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
+
+    def whisper(self, message: str, recipient: dict) -> None:
+        payload = {
+            'roomId': self.__env.get_jqbx_room_id(),
+            'user': get_bot_user(self.__env),
+            'message': {
+                'message': '@%s %s' % (recipient['username'], message),
+                'user': get_bot_user(self.__env),
+                'recipients': [recipient],
+                'selectingEmoji': False
+            }
+        }
         self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
     def dope(self) -> None:

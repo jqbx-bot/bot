@@ -47,7 +47,7 @@ class UpdateRoomHandlerTest(TestCase):
                 self.__to_spotify_user('4')
             ]
         }))
-        self.__dequeue_and_assert_chats([
+        self.__dequeue_and_assert_whispers([
             '@User3 what it do nephew',
             '@User4 what it do nephew'
         ])
@@ -60,7 +60,7 @@ class UpdateRoomHandlerTest(TestCase):
                 self.__to_spotify_user('2')
             ]
         }))
-        self.__dequeue_and_assert_chats([])
+        self.__dequeue_and_assert_whispers([])
 
     def test_no_welcome_because_no_message(self):
         self.__handler.handle(WebSocketMessage(label='update-room', payload={
@@ -74,7 +74,7 @@ class UpdateRoomHandlerTest(TestCase):
                 self.__to_spotify_user('b')
             ]
         }))
-        self.__dequeue_and_assert_chats([])
+        self.__dequeue_and_assert_whispers([])
 
     def test_tracks(self):
         self.assertIsNone(self.__room_state.current_track)
@@ -96,8 +96,8 @@ class UpdateRoomHandlerTest(TestCase):
         self.__handler.handle(WebSocketMessage(label='update-room', payload={}))
         self.assertEqual('foobar', self.__room_state.room_title)
 
-    def __dequeue_and_assert_chats(self, expected_chats: List[str]) -> None:
-        self.assertEqual(expected_chats, self.__bot_controller.dequeue_chats())
+    def __dequeue_and_assert_whispers(self, expected_whispers: List[str]) -> None:
+        self.assertEqual(expected_whispers, self.__bot_controller.dequeue_whispers())
 
     @staticmethod
     def __to_spotify_uri(user_id: str) -> str:

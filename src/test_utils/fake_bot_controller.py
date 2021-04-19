@@ -8,6 +8,7 @@ class FakeBotController(AbstractBotController):
     def __init__(self):
         self.__welcome_message: Optional[str] = None
         self.__chats: List[str] = []
+        self.__whispers: List[str] = []
         self.__doped: bool = False
         self.__noped: bool = False
 
@@ -26,8 +27,11 @@ class FakeBotController(AbstractBotController):
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         self.__welcome_message = welcome_message
 
-    def chat(self, message: str, recipients: Optional[List[dict]] = None) -> None:
+    def chat(self, message: str) -> None:
         self.__chats.append(message)
+
+    def whisper(self, message: str, recipient: dict) -> None:
+        self.__whispers.append('@%s %s' % (recipient['username'], message))
 
     def dope(self) -> None:
         self.__doped = True
@@ -43,3 +47,8 @@ class FakeBotController(AbstractBotController):
         chats = list(self.__chats)
         self.__chats = []
         return chats
+
+    def dequeue_whispers(self) -> List[str]:
+        whispers = list(self.__whispers)
+        self.__whispers = []
+        return whispers

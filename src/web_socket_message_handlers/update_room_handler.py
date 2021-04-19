@@ -33,9 +33,9 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
         users: List[dict] = payload.get('users', [])
         if self.__room_state.user_ids and self.__bot_controller.welcome_message:
             for new_user in [x for x in users if x['id'] not in self.__room_state.user_ids]:
-                self.__bot_controller.chat(
-                    '@%s %s' % (new_user['username'], self.__bot_controller.welcome_message),
-                    [{'uri': 'spotify:user:%s' % new_user['id']}]
+                self.__bot_controller.whisper(
+                    self.__bot_controller.welcome_message,
+                    {'uri': 'spotify:user:%s' % new_user['id'], 'username': new_user['username']}
                 )
         self.__room_state.set_user_ids(list(set([x['id'] for x in users])))
 
