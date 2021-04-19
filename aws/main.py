@@ -42,7 +42,11 @@ class MainStack(Stack):
                 'SPOTIFY_USER_ID': environ.get('SPOTIFY_USER_ID'),
                 'JQBX_ROOM_ID': environ.get('JQBX_ROOM_ID'),
                 'JQBX_BOT_DISPLAY_NAME': environ.get('JQBX_BOT_DISPLAY_NAME'),
-                'JQBX_BOT_IMAGE_URL': environ.get('JQBX_BOT_IMAGE_URL')
+                'JQBX_BOT_IMAGE_URL': environ.get('JQBX_BOT_IMAGE_URL'),
+                'SPOTIFY_CLIENT_ID': environ.get('SPOTIFY_CLIENT_ID'),
+                'SPOTIFY_CLIENT_SECRET': environ.get('SPOTIFY_CLIENT_SECRET'),
+                'SPOTIFY_REDIRECT_URI': environ.get('SPOTIFY_REDIRECT_URI'),
+                'SPOTIFY_REFRESH_TOKEN': environ.get('SPOTIFY_REFRESH_TOKEN')
             },
             logging=AwsLogDriver(
                 stream_prefix='jqbx-bot',
