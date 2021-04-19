@@ -11,8 +11,7 @@ class VotingMachineTest(TestCase):
     def setUp(self) -> None:
         self.__bot_controller = FakeBotController()
         self.__room_state = RoomState.get_instance(self.__bot_controller)
-        self.__voting_machine = VotingMachine('row', 'row, row, row your :canoe: gently down the stream',
-                                              self.__bot_controller, self.__room_state)
+        self.__voting_machine = VotingMachine('row', self.__bot_controller, self.__room_state)
         self.__room_state.set_current_track(create_random_id_object())
         self.__mo = create_random_string()
         self.__curly = create_random_string()
@@ -58,8 +57,7 @@ class VotingMachineTest(TestCase):
         self.__do_vote(self.__joe)
         self.__dequeue_and_assert_chats([
             'row',
-            'row, row',
-            'row, row, row your :canoe: gently down the stream'
+            'row, row'
         ])
         self.assertTrue(self.__bot_controller.doped)
 

@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from src.bot_controller import AbstractBotController, BotController
 from src.web_socket_message_handlers.command_processors.abstract_command_processor import AbstractCommandProcessor
@@ -21,6 +21,8 @@ class HelpCommandProcessor(AbstractCommandProcessor):
         return 'This'
 
     def process(self, user_id: str, payload: Optional[str]) -> None:
+        lines: List[str] = []
         for key in sorted(self.__commands.keys()):
             command = self.__commands[key]
-            self.__bot_controller.chat('/%s: %s' % (command.keyword, command.help))
+            lines.append('/%s: %s' % (command.keyword, command.help))
+        self.__bot_controller.chat(lines)

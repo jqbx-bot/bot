@@ -10,7 +10,7 @@ from src.web_socket_message_handlers.command_processors.voting_machine import Vo
 class RockOutCommandProcessor(AbstractCommandProcessor):
     def __init__(self, spotify_client: AbstractSpotifyClient = SpotifyClient.get_instance(),
                  room_state: AbstractRoomState = RoomState.get_instance()):
-        self.__voting_machine = VotingMachine('row', 'row, row, row your :canoe: gently down the stream')
+        self.__voting_machine = VotingMachine('row')
         self.__spotify_client = spotify_client
         self.__room_state = room_state
 
@@ -33,4 +33,7 @@ class RockOutCommandProcessor(AbstractCommandProcessor):
             'JQBX :: %s :: Favorites' % self.__room_state.room_title,
             self.__room_state.current_track['id']
         )
-        bot_controller.chat('Track has been added to https://open.spotify.com/playlist/%s' % playlist_id)
+        bot_controller.chat([
+            'row, row, row your :canoe: gently down the stream!',
+            'This track has been added to https://open.spotify.com/playlist/%s' % playlist_id
+        ])

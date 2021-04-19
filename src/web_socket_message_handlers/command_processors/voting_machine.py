@@ -5,13 +5,11 @@ from src.room_state import AbstractRoomState, RoomState
 
 
 class VotingMachine:
-    def __init__(self, ack_word: str, success_message: str,
-                 bot_controller: AbstractBotController = BotController.get_instance(),
+    def __init__(self, ack_word: str, bot_controller: AbstractBotController = BotController.get_instance(),
                  room_state: AbstractRoomState = RoomState.get_instance()):
         self.__current_track: Optional[dict] = None
         self.__voter_ids: List[str] = []
         self.__ack_word = ack_word
-        self.__success_message = success_message
         self.__bot_controller = bot_controller
         self.__room_state = room_state
 
@@ -35,5 +33,4 @@ class VotingMachine:
         if voter_count <= 2:
             self.__bot_controller.chat(', '.join(self.__ack_word for _ in range(voter_count)))
         elif voter_count == 3:
-            self.__bot_controller.chat(self.__success_message)
             success_action(self.__bot_controller)

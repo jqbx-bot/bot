@@ -28,7 +28,8 @@ class FakeBotController(AbstractBotController):
         self.__welcome_message = welcome_message
 
     def chat(self, message: Union[str, List[str]]) -> None:
-        self.__chats.extend(message if isinstance(message, list) else [message])
+        messages: List[str] = message if isinstance(message, list) else [message]
+        self.__chats.append('<br/>'.join(messages))
 
     def whisper(self, message: str, recipient: dict) -> None:
         self.__whispers.append('@%s %s' % (recipient['username'], message))

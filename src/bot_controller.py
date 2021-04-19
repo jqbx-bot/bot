@@ -70,18 +70,17 @@ class BotController(AbstractBotController):
         return BotController.__instance
 
     def chat(self, message: Union[str, List[str]]) -> None:
-        messages = message if isinstance(message, list) else [message]
-        for msg in messages:
-            payload = {
-                'roomId': self.__env.get_jqbx_room_id(),
+        lines = message if isinstance(message, list) else [message]
+        payload = {
+            'roomId': self.__env.get_jqbx_room_id(),
+            'user': get_bot_user(self.__env),
+            'message': {
+                'message': '<br/>'.join(lines),
                 'user': get_bot_user(self.__env),
-                'message': {
-                    'message': msg,
-                    'user': get_bot_user(self.__env),
-                    'selectingEmoji': False
-                }
+                'selectingEmoji': False
             }
-            self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
+        }
+        self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
     def whisper(self, message: str, recipient: dict) -> None:
         payload = {
