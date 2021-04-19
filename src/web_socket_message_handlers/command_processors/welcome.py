@@ -1,14 +1,11 @@
 from typing import Optional
 
-from dependency_injector.wiring import inject
-
 from src.bot_controller import AbstractBotController, BotController
 from src.web_socket_message_handlers.command_processors.abstract_command_processor import AbstractCommandProcessor
 from src.room_state import AbstractRoomState, RoomState
 
 
 class WelcomeCommandProcessor(AbstractCommandProcessor):
-    @inject
     def __init__(self, bot_controller: AbstractBotController = BotController.get_instance(),
                  room_state: AbstractRoomState = RoomState.get_instance()):
         self.__bot_controller = bot_controller
