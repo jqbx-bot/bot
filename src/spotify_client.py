@@ -13,7 +13,11 @@ class AbstractSpotifyClient(ABC):
 
 
 class SpotifyClient(AbstractSpotifyClient):
+    __instance: Optional['SpotifyClient'] = None
+
     def __init__(self, env: AbstractEnvironment = Environment()):
+        if SpotifyClient.__instance:
+            raise Exception('Use get_instance() instead!')
         self.__env = env
         self.__spotipy: spotipy.Spotify = spotipy.Spotify(
             auth=spotipy.oauth2.SpotifyOAuth(
@@ -22,9 +26,18 @@ class SpotifyClient(AbstractSpotifyClient):
                 redirect_uri=env.get_spotify_redirect_uri()
             ).refresh_access_token(env.get_spotify_refresh_token())['access_token']
         )
+        SpotifyClient.__instance = self
+
+    @staticmethod
+    def get_instance() -> 'SpotifyClient':
+        if SpotifyClient.__instance is None:
+            SpotifyClient()
+        return SpotifyClient.__instance
 
     def add_to_playlist_and_get_playlist_id(self, playlist_name: str, track_id: str) -> str:
         playlist_id = self.__get_or_create_playlist(playlist_name)
+        self.__spotipy.playlist_remove_all_occurrences_of_items(playlist_id, [track_id])
+        self.__spotipy.playlist_add_items(playlist_id, [track_id])
         return playlist_id
 
     def __get_or_create_playlist(self, playlist_name: str) -> str:

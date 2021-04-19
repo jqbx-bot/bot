@@ -28,6 +28,8 @@ class UpdateRoomHandlerTest(TestCase):
         })
         self.__handler.handle(room_update_message)
         self.assertEqual(sorted(['1', '2', '3']), sorted(self.__room_state.mod_ids))
+        self.__handler.handle(WebSocketMessage(label='update-room', payload={}))
+        self.assertEqual(sorted(['1', '2', '3']), sorted(self.__room_state.mod_ids))
 
     def test_welcome(self):
         self.__bot_controller.set_welcome_message('what it do nephew')
@@ -84,6 +86,15 @@ class UpdateRoomHandlerTest(TestCase):
             ]
         }))
         self.assertEqual(last_track, self.__room_state.current_track)
+
+    def test_room_title(self):
+        self.assertIsNone(self.__room_state.room_title)
+        self.__handler.handle(WebSocketMessage(label='update-room', payload={
+            'title': 'foobar'
+        }))
+        self.assertEqual('foobar', self.__room_state.room_title)
+        self.__handler.handle(WebSocketMessage(label='update-room', payload={}))
+        self.assertEqual('foobar', self.__room_state.room_title)
 
     def __dequeue_and_assert_chats(self, expected_chats: List[str]) -> None:
         self.assertEqual(expected_chats, self.__bot_controller.dequeue_chats())

@@ -6,7 +6,7 @@ from dadjokes import dadjokes
 
 
 class DadjokeCommandProcessor(AbstractCommandProcessor):
-    def __init__(self, bot_controller: AbstractBotController = BotController()):
+    def __init__(self, bot_controller: AbstractBotController = BotController.get_instance()):
         self.__bot_controller = bot_controller
 
     @property

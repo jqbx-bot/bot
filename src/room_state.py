@@ -7,6 +7,11 @@ from src.bot_controller import BotController, AbstractBotController
 class AbstractRoomState(ABC):
     @property
     @abstractmethod
+    def room_title(self) -> Optional[str]:
+        pass
+
+    @property
+    @abstractmethod
     def mod_ids(self) -> List[str]:
         pass
 
@@ -18,6 +23,10 @@ class AbstractRoomState(ABC):
     @property
     @abstractmethod
     def current_track(self) -> Optional[dict]:
+        pass
+
+    @abstractmethod
+    def set_room_title(self, room_title: str) -> None:
         pass
 
     @abstractmethod
@@ -43,6 +52,7 @@ class RoomState(AbstractRoomState):
         self.__user_ids: List[str] = []
         self.__current_track: Optional[dict] = None
         self.__bot_controller = bot_controller
+        self.__room_title: Optional[str] = None
         RoomState.__instance = self
 
     @staticmethod
@@ -50,6 +60,10 @@ class RoomState(AbstractRoomState):
         if RoomState.__instance is None:
             RoomState(bot_controller)
         return RoomState.__instance
+
+    @property
+    def room_title(self) -> Optional[str]:
+        return self.__room_title
 
     @property
     def mod_ids(self) -> List[str]:
@@ -72,3 +86,6 @@ class RoomState(AbstractRoomState):
     def set_current_track(self, current_track: dict) -> None:
         self.__current_track = current_track
         self.__bot_controller.reset_vote()
+
+    def set_room_title(self, room_title: str) -> None:
+        self.__room_title = room_title

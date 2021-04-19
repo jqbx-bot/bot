@@ -6,7 +6,7 @@ from src.web_socket_message_handlers.command_processors.voting_machine import Vo
 
 class NockOutCommandProcessor(AbstractCommandProcessor):
     def __init__(self):
-        self.__vote_processor = VotingMachine('no', 'no, no, no :-1: no way José!')
+        self.__voting_machine = VotingMachine('no', 'no, no, no :-1: no way José!')
 
     @property
     def keyword(self) -> str:
@@ -19,4 +19,4 @@ class NockOutCommandProcessor(AbstractCommandProcessor):
         '''
 
     def process(self, user_id: str, payload: Optional[str] = None) -> None:
-        self.__vote_processor.vote(user_id, lambda x: x.nope())
+        self.__voting_machine.vote(user_id, lambda x: x.nope())

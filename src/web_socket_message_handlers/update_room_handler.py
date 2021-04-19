@@ -21,6 +21,7 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
         self.__update_mod_ids(payload)
         self.__welcome_and_update_users(message.payload)
         self.__update_track(payload)
+        self.__update_room_title(payload)
 
     def __update_mod_ids(self, payload: dict) -> None:
         admins = payload.get('admin', [])
@@ -42,3 +43,8 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
         tracks = payload.get('tracks', [])
         if tracks:
             self.__room_state.set_current_track(tracks[0])
+
+    def __update_room_title(self, payload: dict) -> None:
+        room_title = payload.get('title')
+        if room_title:
+            self.__room_state.set_room_title(room_title)
