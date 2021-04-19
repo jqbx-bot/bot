@@ -25,7 +25,7 @@ class SpotifyClient(AbstractSpotifyClient):
                 client_secret=env.get_spotify_client_secret(),
                 redirect_uri=env.get_spotify_redirect_uri()
             ).refresh_access_token(env.get_spotify_refresh_token())['access_token']
-        )
+        ) if env.get_spotify_client_id() else None
         SpotifyClient.__instance = self
 
     @staticmethod
