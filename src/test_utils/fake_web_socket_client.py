@@ -10,7 +10,7 @@ class FakeWebSocketClient(AbstractWebSocketClient):
         self.__on_message: Optional[Callable[[WebSocketMessage], None]] = None
         self.__client_messages: List[WebSocketMessage] = []
 
-    def register(self, on_open=Callable[[], None], on_message=Callable[[WebSocketMessage], None]) -> None:
+    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None]) -> None:
         self.__on_open = on_open
         self.__on_message = on_message
 

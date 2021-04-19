@@ -8,12 +8,14 @@ websocket-client = "*"
 python-dotenv = "*"
 dadjokes = "*"
 udpy = "*"
+spotipy = "*"
 
 [dev-packages]
 aws-cdk-core = "*"
 aws-cdk-aws-ecs = "*"
 aws-cdk-aws-logs = "*"
 aws-cdk-aws-iam = "*"
+spotify-refresh-token-generator = "*"
 
 [requires]
 python_version = "3.8"

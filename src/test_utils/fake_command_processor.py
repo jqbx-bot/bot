@@ -1,7 +1,6 @@
 from typing import Optional
 
-from src.abstract_bot import AbstractBot
-from src.command_processors.abstract_command_processor import AbstractCommandProcessor
+from src.web_socket_message_handlers.command_processors.abstract_command_processor import AbstractCommandProcessor
 
 
 class FakeCommandProcessor(AbstractCommandProcessor):
@@ -10,6 +9,7 @@ class FakeCommandProcessor(AbstractCommandProcessor):
         self.__call_user_id: Optional[str] = None
         self.__call_payload: Optional[str] = None
         self.__was_called: bool = False
+
     @property
     def help(self) -> str:
         return ''
@@ -30,7 +30,7 @@ class FakeCommandProcessor(AbstractCommandProcessor):
     def call_payload(self) -> Optional[str]:
         return self.__call_payload
 
-    def process(self, bot: AbstractBot, user_id: str, payload: Optional[str]) -> None:
+    def process(self, user_id: str, payload: Optional[str]) -> None:
         self.__call_user_id = user_id
         self.__call_payload = payload
         self.__was_called = True

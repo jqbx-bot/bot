@@ -1,6 +1,6 @@
 import json
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, Optional
 
 from websocket import WebSocketApp
 
@@ -9,7 +9,7 @@ from src.web_socket_message import WebSocketMessage
 
 class AbstractWebSocketClient(ABC):
     @abstractmethod
-    def register(self, on_open=Callable[[], None], on_message=Callable[[WebSocketMessage], None]) -> None:
+    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None]) -> None:
         pass
 
     @abstractmethod
@@ -22,10 +22,21 @@ class AbstractWebSocketClient(ABC):
 
 
 class WebSocketClient(AbstractWebSocketClient):
-    def __init__(self):
-        self.__ws = WebSocketApp('wss://jqbx.fm/socket.io/?EIO=3&transport=websocket')
+    __instance: Optional['WebSocketClient'] = None
 
-    def register(self, on_open=Callable[[], None], on_message=Callable[[WebSocketMessage], None]) -> None:
+    def __init__(self):
+        if WebSocketClient.__instance:
+            raise Exception('Use get_instance() instead!')
+        self.__ws = WebSocketApp('wss://jqbx.fm/socket.io/?EIO=3&transport=websocket')
+        WebSocketClient.__instance = self
+
+    @staticmethod
+    def get_instance() -> 'WebSocketClient':
+        if WebSocketClient.__instance is None:
+            WebSocketClient()
+        return WebSocketClient.__instance
+
+    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None]) -> None:
         self.__ws.on_open = lambda _: on_open()
         self.__ws.on_message = lambda _, raw_message: on_message(self.__parse(raw_message))
 

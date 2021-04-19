@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from src.abstract_bot import AbstractBot
-
 
 class AbstractCommandProcessor(ABC):
     @property
@@ -16,5 +14,5 @@ class AbstractCommandProcessor(ABC):
         pass
 
     @abstractmethod
-    def process(self, bot: AbstractBot, user_id: str, payload: Optional[str]) -> None:
+    def process(self, user_id: str, payload: Optional[str]) -> None:
         pass
