@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from src.bot_controller import AbstractBotController
 
@@ -27,8 +27,8 @@ class FakeBotController(AbstractBotController):
     def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         self.__welcome_message = welcome_message
 
-    def chat(self, message: str) -> None:
-        self.__chats.append(message)
+    def chat(self, message: Union[str, List[str]]) -> None:
+        self.__chats.extend(message if isinstance(message, list) else [message])
 
     def whisper(self, message: str, recipient: dict) -> None:
         self.__whispers.append('@%s %s' % (recipient['username'], message))

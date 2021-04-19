@@ -21,23 +21,6 @@ class HelpCommandProcessor(AbstractCommandProcessor):
         return 'This'
 
     def process(self, user_id: str, payload: Optional[str]) -> None:
-        if not payload:
-            self.__empty_help()
-        else:
-            stripped = payload.strip()
-            command = self.__commands.get(stripped, None)
-            if command:
-                self.__command_help(command)
-            else:
-                self.__bot_controller.chat('Could not find help details for command `%s`' % stripped)
-
-    def __empty_help(self) -> None:
-        sorted_commands = sorted(self.__commands.keys())
-        self.__bot_controller.chat(
-            'To get help for a specific command, type `/help [command]`.  Available commands: %s' % (
-                ', '.join(sorted_commands)
-            )
-        )
-
-    def __command_help(self, command: AbstractCommandProcessor) -> None:
-        self.__bot_controller.chat('/%s: %s' % (command.keyword, command.help))
+        for key in sorted(self.__commands.keys()):
+            command = self.__commands[key]
+            self.__bot_controller.chat('/%s: %s' % (command.keyword, command.help))

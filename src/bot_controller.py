@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from src.env import AbstractEnvironment, Environment
 from src.helpers import get_bot_user
@@ -9,7 +9,7 @@ from src.web_socket_message import WebSocketMessage
 
 class AbstractBotController(ABC):
     @abstractmethod
-    def chat(self, message: str) -> None:
+    def chat(self, message: Union[str, List[str]]) -> None:
         pass
 
     @abstractmethod
@@ -69,17 +69,19 @@ class BotController(AbstractBotController):
             BotController()
         return BotController.__instance
 
-    def chat(self, message: str) -> None:
-        payload = {
-            'roomId': self.__env.get_jqbx_room_id(),
-            'user': get_bot_user(self.__env),
-            'message': {
-                'message': message,
+    def chat(self, message: Union[str, List[str]]) -> None:
+        messages = message if isinstance(message, list) else [message]
+        for msg in messages:
+            payload = {
+                'roomId': self.__env.get_jqbx_room_id(),
                 'user': get_bot_user(self.__env),
-                'selectingEmoji': False
+                'message': {
+                    'message': msg,
+                    'user': get_bot_user(self.__env),
+                    'selectingEmoji': False
+                }
             }
-        }
-        self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
+            self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
     def whisper(self, message: str, recipient: dict) -> None:
         payload = {
