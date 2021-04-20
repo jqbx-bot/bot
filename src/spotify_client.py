@@ -8,7 +8,8 @@ from src.env import AbstractEnvironment, Environment
 
 class AbstractSpotifyClient(ABC):
     @abstractmethod
-    def add_to_playlist_and_get_playlist_id(self, playlist_name: str, track_id: str) -> str:
+    def add_to_playlist_and_get_playlist_id(self, playlist_name: str, playlist_description: str, track_id: str,
+                                            n_to_keep: int) -> str:
         pass
 
 
@@ -33,11 +34,15 @@ class SpotifyClient(AbstractSpotifyClient):
             SpotifyClient()
         return SpotifyClient.__instance
 
-    def add_to_playlist_and_get_playlist_id(self, playlist_name: str, track_id: str) -> str:
+    def add_to_playlist_and_get_playlist_id(self, playlist_name: str, playlist_description: str, track_id: str,
+                                            n_to_keep: int) -> str:
         client = self.__get_authenticated_client()
         playlist_id = self.__get_or_create_playlist(client, playlist_name)
+        client.playlist_change_details(playlist_id, description=playlist_description)
         client.playlist_remove_all_occurrences_of_items(playlist_id, [track_id])
-        client.playlist_add_items(playlist_id, [track_id])
+        client.playlist_add_items(playlist_id, [track_id], 0)
+        tracks: List[dict] = client.playlist_items(playlist_id, limit=n_to_keep)['items']
+        client.playlist_replace_items(playlist_id, [x['track']['id'] for x in tracks])
         return playlist_id
 
     def __get_or_create_playlist(self, client: spotipy.Spotify, playlist_name: str) -> str:
