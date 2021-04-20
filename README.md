@@ -49,4 +49,4 @@ In order for the AWS deployment to succeed, the repository should be configured 
 
 
 ## TODO
-* implement `/relink`
+* implement `/relink` - note to self: "Novastar" by Wrong is area-restricted in the US (as an example to debug with)
