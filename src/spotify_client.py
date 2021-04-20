@@ -19,13 +19,12 @@ class SpotifyClient(AbstractSpotifyClient):
         if SpotifyClient.__instance:
             raise Exception('Use get_instance() instead!')
         self.__env = env
-        self.__spotipy: spotipy.Spotify = spotipy.Spotify(
-            auth=spotipy.oauth2.SpotifyOAuth(
-                client_id=env.get_spotify_client_id(),
-                client_secret=env.get_spotify_client_secret(),
-                redirect_uri=env.get_spotify_redirect_uri()
-            ).refresh_access_token(env.get_spotify_refresh_token())['access_token']
-        ) if env.get_spotify_client_id() else None
+        self.__oauth = spotipy.oauth2.SpotifyOAuth(
+            client_id=env.get_spotify_client_id(),
+            client_secret=env.get_spotify_client_secret(),
+            redirect_uri=env.get_spotify_redirect_uri()
+        )
+        self.__token_info: Optional[dict] = None
         SpotifyClient.__instance = self
 
     @staticmethod
@@ -35,18 +34,24 @@ class SpotifyClient(AbstractSpotifyClient):
         return SpotifyClient.__instance
 
     def add_to_playlist_and_get_playlist_id(self, playlist_name: str, track_id: str) -> str:
-        playlist_id = self.__get_or_create_playlist(playlist_name)
-        self.__spotipy.playlist_remove_all_occurrences_of_items(playlist_id, [track_id])
-        self.__spotipy.playlist_add_items(playlist_id, [track_id])
+        client = self.__get_authenticated_client()
+        playlist_id = self.__get_or_create_playlist(client, playlist_name)
+        client.playlist_remove_all_occurrences_of_items(playlist_id, [track_id])
+        client.playlist_add_items(playlist_id, [track_id])
         return playlist_id
 
-    def __get_or_create_playlist(self, playlist_name: str) -> str:
-        playlists = self.__get_paginated_items(lambda offset: self.__spotipy.current_user_playlists(offset=offset))
+    def __get_or_create_playlist(self, client: spotipy.Spotify, playlist_name: str) -> str:
+        playlists = self.__get_paginated_items(lambda offset: client.current_user_playlists(offset=offset))
         playlist = next((p for p in playlists if p['name'] == playlist_name), None)
         if playlist:
             return playlist['id']
-        playlist_id = self.__spotipy.user_playlist_create(self.__env.get_spotify_user_id(), playlist_name)['id']
+        playlist_id = client.user_playlist_create(self.__env.get_spotify_user_id(), playlist_name)['id']
         return playlist_id
+
+    def __get_authenticated_client(self) -> spotipy.Spotify:
+        if not self.__token_info or self.__oauth.is_token_expired(self.__token_info):
+            self.__token_info = self.__oauth.refresh_access_token(self.__env.get_spotify_refresh_token())
+        return spotipy.Spotify(auth=self.__token_info['access_token'])
 
     @staticmethod
     def __get_paginated_items(get_items_at_offset: Callable, n_to_get: Optional[int] = None) -> List[dict]:
