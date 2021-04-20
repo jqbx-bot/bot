@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from operator import itemgetter
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Dict
 
 import spotipy
 from src.env import AbstractEnvironment, Environment
@@ -10,6 +10,10 @@ class AbstractSpotifyClient(ABC):
     @abstractmethod
     def add_to_playlist_and_get_playlist_id(self, playlist_name: str, playlist_description: str, track_id: str,
                                             n_to_keep: int) -> str:
+        pass
+
+    @abstractmethod
+    def find_links_to_international_versions(self, track_id: str, countries: List[str]) -> Dict[str, str]:
         pass
 
 
@@ -40,6 +44,15 @@ class SpotifyClient(AbstractSpotifyClient):
         tracks: List[dict] = client.playlist_items(playlist_id, limit=n_to_keep)['items']
         client.playlist_replace_items(playlist_id, [x['track']['id'] for x in tracks])
         return playlist_id
+
+    def find_links_to_international_versions(self, track_id: str, countries: List[str]) -> Dict[str, str]:
+        client = self.__get_authenticated_client()
+        unfiltered = {x: self.__get_track_url_for_market(client, track_id, x) for x in countries}
+        return {k: v for k, v in unfiltered.items() if v}
+
+    @staticmethod
+    def __get_track_url_for_market(client: spotipy.Spotify, track_id: str, market: str) -> Optional[str]:
+        return client.track(track_id, market=market).get('external_urls', {}).get('spotify')
 
     def __get_or_create_playlist(self, client: spotipy.Spotify, playlist_name: str) -> str:
         playlists = self.__get_paginated_items(lambda offset: client.current_user_playlists(offset=offset))

@@ -1,3 +1,4 @@
+import copy
 from typing import List
 from unittest import TestCase
 
@@ -11,7 +12,7 @@ from src.web_socket_message_handlers.update_room_handler import UpdateRoomHandle
 class UpdateRoomHandlerTest(TestCase):
     def setUp(self) -> None:
         self.__bot_controller = FakeBotController()
-        self.__room_state = RoomState.get_instance(self.__bot_controller)
+        self.__room_state = copy.deepcopy(RoomState.get_instance(self.__bot_controller))
         self.__handler = UpdateRoomHandler(self.__bot_controller, self.__room_state)
 
     def test_mod_ids(self):
@@ -39,6 +40,7 @@ class UpdateRoomHandlerTest(TestCase):
                 self.__to_spotify_user('2')
             ]
         }))
+        self.__dequeue_and_assert_whispers([])
         self.__handler.handle(WebSocketMessage(label='update-room', payload={
             'users': [
                 self.__to_spotify_user('1'),

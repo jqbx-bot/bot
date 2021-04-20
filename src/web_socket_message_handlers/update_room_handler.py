@@ -31,13 +31,14 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
 
     def __welcome_and_update_users(self, payload: dict) -> None:
         users: List[dict] = payload.get('users', [])
-        if self.__room_state.user_ids and self.__bot_controller.welcome_message:
-            for new_user in [x for x in users if x['id'] not in self.__room_state.user_ids]:
+        if self.__room_state.users and self.__bot_controller.welcome_message:
+            for new_user in [x for x in users if x['id'] not in [y['id'] for y in self.__room_state.users]]:
                 self.__bot_controller.whisper(
                     self.__bot_controller.welcome_message,
                     {'uri': 'spotify:user:%s' % new_user['id'], 'username': new_user['username']}
                 )
-        self.__room_state.set_user_ids(list(set([x['id'] for x in users])))
+        if 'users' in payload:
+            self.__room_state.set_users(users)
 
     def __update_track(self, payload: dict) -> None:
         tracks = payload.get('tracks', [])

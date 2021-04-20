@@ -17,7 +17,7 @@ class AbstractRoomState(ABC):
 
     @property
     @abstractmethod
-    def user_ids(self) -> List[str]:
+    def users(self) -> List[dict]:
         pass
 
     @property
@@ -34,7 +34,7 @@ class AbstractRoomState(ABC):
         pass
 
     @abstractmethod
-    def set_user_ids(self, user_ids: List[str]) -> None:
+    def set_users(self, users: List[dict]) -> None:
         pass
 
     @abstractmethod
@@ -49,7 +49,7 @@ class RoomState(AbstractRoomState):
         if RoomState.__instance:
             raise Exception('Use get_instance() instead!')
         self.__mod_ids: List[str] = []
-        self.__user_ids: List[str] = []
+        self.__users: List[dict] = []
         self.__current_track: Optional[dict] = None
         self.__bot_controller = bot_controller
         self.__room_title: Optional[str] = None
@@ -70,8 +70,8 @@ class RoomState(AbstractRoomState):
         return self.__mod_ids
 
     @property
-    def user_ids(self) -> List[str]:
-        return self.__user_ids
+    def users(self) -> List[dict]:
+        return self.__users
 
     @property
     def current_track(self) -> Optional[dict]:
@@ -80,8 +80,8 @@ class RoomState(AbstractRoomState):
     def set_mod_ids(self, mod_ids: List[str]) -> None:
         self.__mod_ids = mod_ids
 
-    def set_user_ids(self, user_ids: List[str]) -> None:
-        self.__user_ids = user_ids
+    def set_users(self, users: List[dict]) -> None:
+        self.__users = users
 
     def set_current_track(self, current_track: dict) -> None:
         self.__current_track = current_track
