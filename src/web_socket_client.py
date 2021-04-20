@@ -1,15 +1,17 @@
 import json
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
+from typing import Callable, Optional, Any
 
 from websocket import WebSocketApp
 
+from src.logger import AbstractLogger, Logger
 from src.web_socket_message import WebSocketMessage
 
 
 class AbstractWebSocketClient(ABC):
     @abstractmethod
-    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None]) -> None:
+    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None],
+                 on_error: Callable[[Any], None], on_close: Callable[[], None]) -> None:
         pass
 
     @abstractmethod
@@ -24,10 +26,11 @@ class AbstractWebSocketClient(ABC):
 class WebSocketClient(AbstractWebSocketClient):
     __instance: Optional['WebSocketClient'] = None
 
-    def __init__(self):
+    def __init__(self, logger: AbstractLogger = Logger()):
         if WebSocketClient.__instance:
             raise Exception('Use get_instance() instead!')
         self.__ws = WebSocketApp('wss://jqbx.fm/socket.io/?EIO=3&transport=websocket')
+        self.__logger = logger
         WebSocketClient.__instance = self
 
     @staticmethod
@@ -36,7 +39,8 @@ class WebSocketClient(AbstractWebSocketClient):
             WebSocketClient()
         return WebSocketClient.__instance
 
-    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None]) -> None:
+    def register(self, on_open: Callable[[], None], on_message: Callable[[WebSocketMessage], None],
+                 on_error: Callable[[Any], None], on_close: Callable[[], None]) -> None:
         self.__ws.on_open = lambda _: on_open()
         self.__ws.on_message = lambda _, raw_message: on_message(self.__parse(raw_message))
 
@@ -44,6 +48,7 @@ class WebSocketClient(AbstractWebSocketClient):
         self.__ws.run_forever()
 
     def send(self, web_socket_message: WebSocketMessage) -> None:
+        self.__logger.info('Outgoing Message', web_socket_message.as_dict())
         serialized = str(web_socket_message.code)
         array_part = [x for x in [web_socket_message.label, web_socket_message.payload] if x]
         if array_part:

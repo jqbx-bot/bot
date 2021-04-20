@@ -1,3 +1,4 @@
+import json
 from typing import Optional
 
 
@@ -18,3 +19,10 @@ class WebSocketMessage:
     @property
     def payload(self) -> Optional[dict]:
         return self.__payload
+
+    def as_dict(self) -> dict:
+        return {
+            'code': self.__code,
+            'label': self.__label,
+            'payload': self.payload
+        }
