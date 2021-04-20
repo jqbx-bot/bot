@@ -7,8 +7,8 @@ name = "pypi"
 websocket-client = "*"
 python-dotenv = "*"
 dadjokes = "*"
-udpy = "*"
 spotipy = "*"
+udpy = "*"
 
 [dev-packages]
 aws-cdk-core = "*"

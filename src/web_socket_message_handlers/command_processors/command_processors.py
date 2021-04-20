@@ -5,6 +5,7 @@ from src.web_socket_message_handlers.command_processors.dadjoke import DadjokeCo
 from src.web_socket_message_handlers.command_processors.no import NockOutCommandProcessor
 from src.web_socket_message_handlers.command_processors.ro import RockOutCommandProcessor
 from src.web_socket_message_handlers.command_processors.unwelcome import UnwelcomeCommandProcessor
+from src.web_socket_message_handlers.command_processors.urban import UrbanCommandProcessor
 from src.web_socket_message_handlers.command_processors.welcome import WelcomeCommandProcessor
 
 command_processors: List[AbstractCommandProcessor] = [
@@ -12,5 +13,6 @@ command_processors: List[AbstractCommandProcessor] = [
     UnwelcomeCommandProcessor(),
     DadjokeCommandProcessor(),
     RockOutCommandProcessor(),
-    NockOutCommandProcessor()
+    NockOutCommandProcessor(),
+    UrbanCommandProcessor()
 ]
