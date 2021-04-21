@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from src.constants import bot_user_id
 from src.test_utils.fake_command_processor import FakeCommandProcessor
 from src.test_utils.fake_environment import FakeEnvironment
 from src.web_socket_message import WebSocketMessage
@@ -34,7 +33,7 @@ class PushMessageHandlerTest(TestCase):
     def test_no_command_because_sent_from_bot(self) -> None:
         self.__handler.handle(WebSocketMessage(
             label='push-message',
-            payload=self.__create_push_message(bot_user_id, '/fake foo bar')
+            payload=self.__create_push_message(self.__env.get_spotify_user_id(), '/fake foo bar')
         ))
         self.assertFalse(self.__command_processor.was_called)
 
