@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-
+from src.constants import bot_user_id
 from src.web_socket_message_handlers.command_processors.abstract_command_processor import AbstractCommandProcessor
 from src.web_socket_message_handlers.command_processors.command_processors import command_processors
 from src.web_socket_message_handlers.command_processors.help import HelpCommandProcessor
@@ -24,7 +24,7 @@ class PushMessageHandler(AbstractWebSocketMessageHandler):
     def handle(self, message: WebSocketMessage) -> None:
         payload = message.payload
         user_id = payload.get('user', {}).get('id', None)
-        if user_id is None or user_id == self.__env.get_spotify_user_id():
+        if user_id is None or user_id == bot_user_id:
             return
         stripped = payload['message'].strip()
         if not (stripped.startswith('/') and len(stripped) > 1):
