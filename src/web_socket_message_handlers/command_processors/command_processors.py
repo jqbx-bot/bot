@@ -1,6 +1,7 @@
 from typing import List
 
 from src.web_socket_message_handlers.command_processors.abstract_command_processor import AbstractCommandProcessor
+from src.web_socket_message_handlers.command_processors.choose import ChooseCommandProcessor
 from src.web_socket_message_handlers.command_processors.dadjoke import DadjokeCommandProcessor
 from src.web_socket_message_handlers.command_processors.mbn import MustBeNiceCommandProcessor
 from src.web_socket_message_handlers.command_processors.no import NockOutCommandProcessor
@@ -22,5 +23,6 @@ command_processors: List[AbstractCommandProcessor] = [
     RelinkCommandProcessor(),
     SureJanCommandProcessor(),
     MustBeNiceCommandProcessor(),
-    ThatsWhatSheSaidCommandProcessor()
+    ThatsWhatSheSaidCommandProcessor(),
+    ChooseCommandProcessor()
 ]
