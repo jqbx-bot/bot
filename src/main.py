@@ -1,5 +1,3 @@
-import traceback
-
 from src.env import AbstractEnvironment, Environment
 from src.helpers import get_bot_user
 from src.logger import AbstractLogger, Logger
@@ -31,8 +29,12 @@ def main(web_socket_client: AbstractWebSocketClient, env: AbstractEnvironment, l
     def __on_close() -> None:
         logger.info('Websocket connection CLOSED')
 
-    web_socket_client.register(__on_open, __on_message, __on_error, __on_close)
-    web_socket_client.run()
+    while True:
+        web_socket_client.register(__on_open, __on_message, __on_error, __on_close)
+        was_keyboard_interrupt = not web_socket_client.run()
+        if was_keyboard_interrupt:
+            break
+        logger.error(Exception('Websocket client stopped. Restarting.'))
 
 
 if __name__ == '__main__':
