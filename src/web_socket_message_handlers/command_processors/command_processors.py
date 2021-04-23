@@ -7,6 +7,7 @@ from src.web_socket_message_handlers.command_processors.mbn import MustBeNiceCom
 from src.web_socket_message_handlers.command_processors.no import NockOutCommandProcessor
 from src.web_socket_message_handlers.command_processors.ro import RockOutCommandProcessor
 from src.web_socket_message_handlers.command_processors.sj import SureJanCommandProcessor
+from src.web_socket_message_handlers.command_processors.theme import ThemeCommandProcessor
 from src.web_socket_message_handlers.command_processors.twss import ThatsWhatSheSaidCommandProcessor
 from src.web_socket_message_handlers.command_processors.unwelcome import UnwelcomeCommandProcessor
 from src.web_socket_message_handlers.command_processors.urban import UrbanCommandProcessor
@@ -22,5 +23,6 @@ command_processors: List[AbstractCommandProcessor] = [
     SureJanCommandProcessor(),
     MustBeNiceCommandProcessor(),
     ThatsWhatSheSaidCommandProcessor(),
-    ChooseCommandProcessor()
+    ChooseCommandProcessor(),
+    ThemeCommandProcessor()
 ]
