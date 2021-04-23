@@ -26,21 +26,12 @@ class AbstractBotController(ABC):
 
     @property
     @abstractmethod
-    def welcome_message(self) -> Optional[str]:
-        pass
-
-    @property
-    @abstractmethod
     def doped(self) -> bool:
         pass
 
     @property
     @abstractmethod
     def noped(self) -> bool:
-        pass
-
-    @abstractmethod
-    def set_welcome_message(self, welcome_message: Optional[str]) -> None:
         pass
 
     @abstractmethod
@@ -57,7 +48,6 @@ class BotController(AbstractBotController):
             raise Exception('Use get_instance() instead!')
         self.__env = env
         self.__web_socket_client = web_socket_client
-        self.__welcome_message: Optional[str] = None
         self.__current_track: Optional[dict] = None
         self.__doped: bool = False
         self.__noped: bool = False
@@ -114,19 +104,12 @@ class BotController(AbstractBotController):
         self.__noped = True
 
     @property
-    def welcome_message(self) -> Optional[str]:
-        return self.__welcome_message
-
-    @property
     def doped(self) -> bool:
         return self.__doped
 
     @property
     def noped(self) -> bool:
         return self.__noped
-
-    def set_welcome_message(self, welcome_message: Optional[str]) -> None:
-        self.__welcome_message = welcome_message
 
     def reset_vote(self) -> None:
         self.__doped = False

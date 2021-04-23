@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from src.room_state import RoomState
 from src.test_utils.fake_bot_controller import FakeBotController
+from src.test_utils.fake_data_service import FakeDataService
 from src.test_utils.test_helpers import create_random_id_object
 from src.web_socket_message import WebSocketMessage
 from src.web_socket_message_handlers.update_room_handler import UpdateRoomHandler
@@ -12,8 +13,9 @@ from src.web_socket_message_handlers.update_room_handler import UpdateRoomHandle
 class UpdateRoomHandlerTest(TestCase):
     def setUp(self) -> None:
         self.__bot_controller = FakeBotController()
+        self.__data_service = FakeDataService()
         self.__room_state = copy.deepcopy(RoomState.get_instance(self.__bot_controller))
-        self.__handler = UpdateRoomHandler(self.__bot_controller, self.__room_state)
+        self.__handler = UpdateRoomHandler(self.__bot_controller, self.__room_state, self.__data_service)
 
     def test_mod_ids(self):
         self.assertEqual(len(self.__room_state.mod_ids), 0)
@@ -33,7 +35,7 @@ class UpdateRoomHandlerTest(TestCase):
         self.assertEqual(sorted(['1', '2', '3']), sorted(self.__room_state.mod_ids))
 
     def test_welcome(self):
-        self.__bot_controller.set_welcome_message('what it do nephew')
+        self.__data_service.set_welcome_message('what it do nephew')
         self.__handler.handle(WebSocketMessage(label='update-room', payload={
             'users': [
                 self.__to_spotify_user('1'),
@@ -55,7 +57,7 @@ class UpdateRoomHandlerTest(TestCase):
         ])
 
     def test_no_welcome_because_no_initial_users(self):
-        self.__bot_controller.set_welcome_message('what it do nephew')
+        self.__data_service.set_welcome_message('what it do nephew')
         self.__handler.handle(WebSocketMessage(label='update-room', payload={
             'users': [
                 self.__to_spotify_user('1'),

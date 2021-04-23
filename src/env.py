@@ -40,6 +40,10 @@ class AbstractEnvironment(ABC):
     def get_spotify_refresh_token(self) -> str:
         pass
 
+    @abstractmethod
+    def get_data_service_base_url(self) -> str:
+        pass
+
 
 class Environment(AbstractEnvironment):
     def get_spotify_user_id(self) -> str:
@@ -65,3 +69,6 @@ class Environment(AbstractEnvironment):
 
     def get_spotify_refresh_token(self) -> str:
         return environ.get('SPOTIFY_REFRESH_TOKEN')
+
+    def get_data_service_base_url(self) -> str:
+        return environ.get('DATA_SERVICE_BASE_URL')

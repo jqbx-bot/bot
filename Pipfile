@@ -9,6 +9,7 @@ python-dotenv = "*"
 dadjokes = "*"
 spotipy = "*"
 udpy = "*"
+requests = "*"
 
 [dev-packages]
 aws-cdk-core = "*"

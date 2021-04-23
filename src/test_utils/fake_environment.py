@@ -2,6 +2,7 @@ from src.env import AbstractEnvironment
 
 
 class FakeEnvironment(AbstractEnvironment):
+
     def get_spotify_user_id(self) -> str:
         return 'spotify_user_id'
 
@@ -25,3 +26,6 @@ class FakeEnvironment(AbstractEnvironment):
 
     def get_spotify_refresh_token(self) -> str:
         return 'spotify_refresh_token'
+
+    def get_data_service_base_url(self) -> str:
+        return 'data_service_base_url'

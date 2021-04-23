@@ -1,6 +1,7 @@
 from typing import List
 
 from src.bot_controller import AbstractBotController, BotController
+from src.data_service import AbstractDataService, DataService
 from src.room_state import AbstractRoomState, RoomState
 from src.web_socket_message import WebSocketMessage
 from src.web_socket_message_handlers.abstract_web_socket_message_handler import AbstractWebSocketMessageHandler
@@ -8,9 +9,11 @@ from src.web_socket_message_handlers.abstract_web_socket_message_handler import 
 
 class UpdateRoomHandler(AbstractWebSocketMessageHandler):
     def __init__(self, bot_controller: AbstractBotController = BotController.get_instance(),
-                 room_state: AbstractRoomState = RoomState.get_instance()):
+                 room_state: AbstractRoomState = RoomState.get_instance(),
+                 data_service: AbstractDataService = DataService()):
         self.__bot_controller = bot_controller
         self.__room_state = room_state
+        self.__data_service = data_service
 
     @property
     def message_label(self) -> str:
@@ -31,10 +34,11 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
 
     def __welcome_and_update_users(self, payload: dict) -> None:
         users: List[dict] = payload.get('users', [])
-        if self.__room_state.users and self.__bot_controller.welcome_message:
+        welcome_message = self.__data_service.get_welcome_message()
+        if self.__room_state.users and welcome_message:
             for new_user in [x for x in users if x['id'] not in [y['id'] for y in self.__room_state.users]]:
                 self.__bot_controller.whisper(
-                    self.__bot_controller.welcome_message,
+                    welcome_message,
                     {'uri': 'spotify:user:%s' % new_user['id'], 'username': new_user['username']}
                 )
         if 'users' in payload:

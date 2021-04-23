@@ -6,15 +6,10 @@ from src.bot_controller import AbstractBotController
 class FakeBotController(AbstractBotController):
 
     def __init__(self):
-        self.__welcome_message: Optional[str] = None
         self.__chats: List[str] = []
         self.__whispers: List[str] = []
         self.__doped: bool = False
         self.__noped: bool = False
-
-    @property
-    def welcome_message(self) -> Optional[str]:
-        return self.__welcome_message
 
     @property
     def doped(self) -> bool:
@@ -23,9 +18,6 @@ class FakeBotController(AbstractBotController):
     @property
     def noped(self) -> bool:
         return self.__noped
-
-    def set_welcome_message(self, welcome_message: Optional[str]) -> None:
-        self.__welcome_message = welcome_message
 
     def chat(self, message: Union[str, List[str]]) -> None:
         messages: List[str] = message if isinstance(message, list) else [message]
