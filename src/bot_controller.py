@@ -73,13 +73,17 @@ class BotController(AbstractBotController):
         self.__web_socket_client.send(WebSocketMessage(label='chat', payload=payload))
 
     def whisper(self, message: str, recipient: dict) -> None:
+        bot_user = get_bot_user(self.__env)
         payload = {
             'roomId': self.__env.get_jqbx_room_id(),
-            'user': get_bot_user(self.__env),
+            'user': bot_user,
             'message': {
                 'message': '@%s %s' % (recipient['username'], message),
                 'user': get_bot_user(self.__env),
-                'recipients': [recipient],
+                'recipients': [
+                    recipient,
+                    bot_user
+                ],
                 'selectingEmoji': False
             }
         }
