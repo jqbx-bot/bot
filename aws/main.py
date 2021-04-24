@@ -46,7 +46,8 @@ class MainStack(Stack):
                 'SPOTIFY_CLIENT_ID': environ.get('SPOTIFY_CLIENT_ID'),
                 'SPOTIFY_CLIENT_SECRET': environ.get('SPOTIFY_CLIENT_SECRET'),
                 'SPOTIFY_REDIRECT_URI': environ.get('SPOTIFY_REDIRECT_URI'),
-                'SPOTIFY_REFRESH_TOKEN': environ.get('SPOTIFY_REFRESH_TOKEN')
+                'SPOTIFY_REFRESH_TOKEN': environ.get('SPOTIFY_REFRESH_TOKEN'),
+                'DATA_SERVICE_BASE_URL': environ.get('DATA_SERVICE_BASE_URL')
             },
             logging=AwsLogDriver(
                 stream_prefix='jqbx-bot',

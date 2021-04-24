@@ -19,6 +19,7 @@ In order for the bot to work, the following environment variables need to be pre
 
 | Environment Variable | Description |
 | --- | --- |
+| DATA_SERVICE_BASE_URL | Base URL of jqbx-bot [data service](https://github.com/jqbx-bot/data-service) (e.g. http://api.com/foo) |
 | JQBX_ROOM_ID | The ID of the room that the bot should join. |
 | JQBX_BOT_DISPLAY_NAME | The username that the bot should assume in the room |
 | JQBX_BOT_IMAGE_URL | A url to an image or gif that the bot should use as its avatar |
@@ -38,6 +39,7 @@ In order for the AWS deployment to succeed, the repository should be configured 
 | --- | --- |
 | AWS_ACCESS_KEY_ID | Access key ID of an IAM user with sufficient deployment privileges |
 | AWS_SECRET_ACCESS_KEY | The secret access key associated with `AWS_ACCESS_KEY_ID` |
+| DATA_SERVICE_BASE_URL | Same context as in [Environment Variables](#Environment-Variables) |
 | JQBX_ROOM_ID | Same context as in [Environment Variables](#Environment-Variables) |
 | JQBX_BOT_DISPLAY_NAME | Same context as in [Environment Variables](#Environment-Variables) |
 | JQBX_BOT_IMAGE_URL | Same context as in [Environment Variables](#Environment-Variables) |
