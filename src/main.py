@@ -13,10 +13,6 @@ def main(web_socket_client: AbstractWebSocketClient, env: AbstractEnvironment, l
             'roomId': env.get_jqbx_room_id(),
             'user': get_bot_user(env)
         }))
-        web_socket_client.send(WebSocketMessage(label='join', payload={
-            'roomId': '6078f7ee5d84fc019afaa97c',
-            'user': get_bot_user(env)
-        }))
 
     def __on_message(message: WebSocketMessage) -> None:
         logger.info('Incoming Message', message.as_dict())
