@@ -2,6 +2,7 @@ from typing import List
 
 from src.bot_controller import AbstractBotController, BotController
 from src.data_service import AbstractDataService, DataService
+from src.env import Environment, AbstractEnvironment
 from src.room_state import AbstractRoomState, RoomState
 from src.web_socket_message import WebSocketMessage
 from src.web_socket_message_handlers.abstract_web_socket_message_handler import AbstractWebSocketMessageHandler
@@ -10,10 +11,12 @@ from src.web_socket_message_handlers.abstract_web_socket_message_handler import 
 class UpdateRoomHandler(AbstractWebSocketMessageHandler):
     def __init__(self, bot_controller: AbstractBotController = BotController.get_instance(),
                  room_state: AbstractRoomState = RoomState.get_instance(),
-                 data_service: AbstractDataService = DataService()):
+                 data_service: AbstractDataService = DataService(),
+                 env: AbstractEnvironment = Environment()):
         self.__bot_controller = bot_controller
         self.__room_state = room_state
         self.__data_service = data_service
+        self.__env = env
 
     @property
     def message_label(self) -> str:
@@ -36,7 +39,12 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
         users: List[dict] = payload.get('users', [])
         welcome_message = self.__data_service.get_welcome_message()
         if self.__room_state.users and welcome_message:
-            for new_user in [x for x in users if x['id'] not in [y['id'] for y in self.__room_state.users]]:
+            new_users = [
+                x for x in users
+                if x['id'] != self.__env.get_spotify_user_id()
+                   and x['id'] not in [y['id'] for y in self.__room_state.users]
+            ]
+            for new_user in new_users:
                 self.__bot_controller.whisper(
                     welcome_message,
                     {'uri': 'spotify:user:%s' % new_user['id'], 'username': new_user['username']}
