@@ -21,7 +21,7 @@ class ThemeCommandProcessor(AbstractCommandProcessor):
     @property
     def help(self) -> str:
         return '''
-            See the current theme (if set)
+            See the current theme
         '''
 
     def process(self, user_id: str, payload: Optional[str] = None) -> None:

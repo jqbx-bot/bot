@@ -30,13 +30,11 @@ class RockOutCommandProcessor(AbstractCommandProcessor):
     def __dope_and_add_to_playlist(self, bot_controller: AbstractBotController) -> None:
         bot_controller.dope()
         n_to_keep: int = 100
+        bot_controller.chat('row, row, row your :canoe: gently down the stream!')
         playlist_id = self.__spotify_client.add_to_playlist_and_get_playlist_id(
             'JQBX :: %s :: Favorites' % self.__room_state.room_title,
             'The last %s tracks that %s rocked out to' % (n_to_keep, self.__room_state.room_title),
             self.__room_state.current_track['id'],
             n_to_keep
         )
-        bot_controller.chat([
-            'row, row, row your :canoe: gently down the stream!',
-            'This track has been added to https://open.spotify.com/playlist/%s' % playlist_id
-        ])
+        bot_controller.chat('This track has been added to https://open.spotify.com/playlist/%s' % playlist_id)
