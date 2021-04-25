@@ -15,7 +15,7 @@ class DadjokeCommandProcessor(AbstractCommandProcessor):
 
     @property
     def help(self) -> str:
-        return 'Get a dad joke! Will give a random joke if you do not use a search term.'
+        return 'Hi, I\'m Dad.'
 
     def process(self, user_id: str, payload: Optional[str]) -> None:
         self.__bot_controller.chat(dadjokes.Dadjoke().joke)
