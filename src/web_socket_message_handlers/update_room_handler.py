@@ -37,18 +37,20 @@ class UpdateRoomHandler(AbstractWebSocketMessageHandler):
 
     def __welcome_and_update_users(self, payload: dict) -> None:
         users: List[dict] = payload.get('users', [])
-        welcome_message = self.__data_service.get_welcome_message()
-        if self.__room_state.users and welcome_message:
+        if self.__room_state.users:
             new_users = [
                 x for x in users
                 if x['id'] != self.__env.get_spotify_user_id()
                    and x['id'] not in [y['id'] for y in self.__room_state.users]
             ]
-            for new_user in new_users:
-                self.__bot_controller.whisper(
-                    welcome_message,
-                    {'uri': 'spotify:user:%s' % new_user['id'], 'username': new_user['username']}
-                )
+            if new_users:
+                welcome_message = self.__data_service.get_welcome_message()
+                if welcome_message:
+                    for new_user in new_users:
+                        self.__bot_controller.whisper(
+                            welcome_message,
+                            {'uri': 'spotify:user:%s' % new_user['id'], 'username': new_user['username']}
+                        )
         if 'users' in payload:
             self.__room_state.set_users(users)
 

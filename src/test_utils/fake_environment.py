@@ -15,17 +15,5 @@ class FakeEnvironment(AbstractEnvironment):
     def get_jqbx_bot_image_url(self) -> str:
         return 'jqbx_bot_image_url'
 
-    def get_spotify_client_id(self) -> str:
-        return 'spotify_client_id'
-
-    def get_spotify_client_secret(self) -> str:
-        return 'spotify_client_secret'
-
-    def get_spotify_redirect_uri(self) -> str:
-        return 'get_spotify_redirect_uri'
-
-    def get_spotify_refresh_token(self) -> str:
-        return 'spotify_refresh_token'
-
     def get_data_service_base_url(self) -> str:
         return 'data_service_base_url'

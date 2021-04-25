@@ -19,3 +19,7 @@ class FakeDataService(AbstractDataService):
 
     def relink(self, track_id: str, markets: List[str]) -> Optional[Dict[str, str]]:
         return None
+
+    def add_to_favorites_playlist(self, track_id: str) -> Optional[str]:
+        pass
+

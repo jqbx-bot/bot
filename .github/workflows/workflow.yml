@@ -35,9 +35,5 @@ jobs:
           JQBX_BOT_DISPLAY_NAME="${{ secrets.JQBX_BOT_DISPLAY_NAME }}" \
           JQBX_BOT_IMAGE_URL="${{ secrets.JQBX_BOT_IMAGE_URL }}" \
           SPOTIFY_USER_ID="${{ secrets.SPOTIFY_USER_ID }}" \
-          SPOTIFY_CLIENT_ID="${{ secrets.SPOTIFY_CLIENT_ID }}" \
-          SPOTIFY_CLIENT_SECRET="${{ secrets.SPOTIFY_CLIENT_SECRET }}" \
-          SPOTIFY_REDIRECT_URI="${{ secrets.SPOTIFY_REDIRECT_URI }}" \
-          SPOTIFY_REFRESH_TOKEN="${{ secrets.SPOTIFY_REFRESH_TOKEN }}" \
           DATA_SERVICE_BASE_URL="${{ secrets.DATA_SERVICE_BASE_URL }}" \
           cdk deploy --require-approval never --verbose
