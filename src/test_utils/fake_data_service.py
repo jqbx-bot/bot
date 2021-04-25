@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import Optional, List, Dict
 
 from src.data_service import AbstractDataService
 
 
 class FakeDataService(AbstractDataService):
+
     def __init__(self):
         self.__welcome_message: Optional[str] = None
 
@@ -15,3 +16,6 @@ class FakeDataService(AbstractDataService):
 
     def clear_welcome_message(self) -> None:
         self.__welcome_message = None
+
+    def relink(self, track_id: str, markets: List[str]) -> Optional[Dict[str, str]]:
+        return None
