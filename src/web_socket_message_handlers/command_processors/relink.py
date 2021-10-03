@@ -9,7 +9,7 @@ from src.web_socket_message_handlers.command_processors.abstract_command_process
 class RelinkCommandProcessor(AbstractCommandProcessor):
     def __init__(self, room_state: AbstractRoomState = RoomState.get_instance(),
                  bot_controller: AbstractBotController = BotController.get_instance(),
-                 data_service: AbstractDataService = DataService()):
+                 data_service: AbstractDataService = DataService.get_instance()):
         self.__room_state = room_state
         self.__bot_controller = bot_controller
         self.__data_service = data_service

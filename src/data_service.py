@@ -29,10 +29,20 @@ class AbstractDataService(ABC):
 
 
 class DataService(AbstractDataService):
+    __instance: Optional['DataService'] = None
+
     def __init__(self, env: AbstractEnvironment = Environment()):
+        if DataService.__instance:
+            raise Exception('Use get_instance() instead!')
         self.__base_url = env.get_data_service_base_url()
         self.__room_id = env.get_jqbx_room_id()
         self.__cached_welcome_message: Optional[str] = None
+
+    @staticmethod
+    def get_instance() -> 'DataService':
+        if DataService.__instance is None:
+            DataService()
+        return DataService.__instance
 
     def get_welcome_message(self) -> Optional[str]:
         if self.__cached_welcome_message:
