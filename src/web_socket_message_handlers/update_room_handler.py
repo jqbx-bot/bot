@@ -11,7 +11,7 @@ from src.web_socket_message_handlers.abstract_web_socket_message_handler import 
 class UpdateRoomHandler(AbstractWebSocketMessageHandler):
     def __init__(self, bot_controller: AbstractBotController = BotController.get_instance(),
                  room_state: AbstractRoomState = RoomState.get_instance(),
-                 data_service: AbstractDataService = DataService.get_instance(),
+                 data_service: AbstractDataService = DataService(),
                  env: AbstractEnvironment = Environment()):
         self.__bot_controller = bot_controller
         self.__room_state = room_state
